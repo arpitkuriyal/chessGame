@@ -14,7 +14,8 @@ export class Game{
         this.board=new Chess()
         this.currentTurn=player1
     }
-    boardcast(message:object){
+    //this we used to b
+    broadcast(message:object){
         this.player1.sendMessage(message)
         this.player2.sendMessage(message)
     }
@@ -43,13 +44,13 @@ export class Game{
                 message:'not a valid move'
             })
         }
-        this.boardcast({
+        this.broadcast({
             type:'move',
             move:result,
             board:this.board.fen()
         })
         if(this.board.isGameOver()){
-            this.boardcast({
+            this.broadcast({
                 type:'game-over',
                 message:this.gameOvermessage()
             })
