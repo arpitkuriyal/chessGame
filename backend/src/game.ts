@@ -35,6 +35,8 @@ export class Game{
             return false
         }
         const result=this.board.move(move)
+
+
         if(!result){
             player.sendMessage({
                 type:"error",

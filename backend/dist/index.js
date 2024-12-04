@@ -9,6 +9,7 @@ socket.on('connection', function (ws) {
     ws.on('error', console.error);
     //every time a connection is made a newplayer is form.
     const newPlayer = new player_1.Player(ws);
+    //getting message for the frontend and act accordingly
     ws.on('message', function (data) {
         const message = JSON.parse(data.toString());
         if (message.type === "join-queue") {

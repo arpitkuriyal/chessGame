@@ -1,16 +1,20 @@
 import { WebSocketServer } from "ws";
 import { Player } from "./player";
 import { GameManager } from "./gameManager";
-import { Game } from "./game";
 
 
 const socket =new WebSocketServer({port:8080})
+
 const gameManager=new GameManager()
 
 socket.on('connection',function(ws){
+
     ws.on('error',console.error)
+
     //every time a connection is made a newplayer is form.
     const newPlayer=new Player(ws)
+    
+    //getting message for the frontend and act accordingly
     ws.on('message',function(data){
         const message=JSON.parse(data.toString())
         if(message.type==="join-queue"){

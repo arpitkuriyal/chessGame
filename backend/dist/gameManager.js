@@ -5,13 +5,15 @@ const game_1 = require("./game");
 class GameManager {
     constructor() {
         this.waitingList = [];
-        this.activeGame = [];
+        //should use map here for better time complexity
+        this.activeGame = new Map();
     }
     addToQueue(player) {
         if (this.waitingList.length > 0) {
             const opponent = this.waitingList.shift();
+            //because opponent come first we put opponent as player1 in the startgame as it was waiting in the queue
             if (opponent) {
-                this.startGame(player, opponent);
+                this.startGame(opponent, player);
             }
         }
         else {
@@ -26,7 +28,7 @@ class GameManager {
         const game = new game_1.Game(player1, player2);
         player1.gameId = game.id;
         player2.gameId = game.id;
-        this.activeGame.push(game);
+        this.activeGame.set(game.id, game);
         player1.sendMessage({
             type: "game_started",
             message: `game is started and your opponent is ${player2.id}`,
@@ -45,7 +47,8 @@ class GameManager {
             player.sendMessage({ type: 'error', message: 'Invalid move structure.' });
             return;
         }
-        const game = this.activeGame.find((g) => g.id === player.gameId);
+        const gameId = player.gameId;
+        const game = this.activeGame.get(gameId);
         if (!game) {
             player.sendMessage({ type: 'error', message: 'You are not in a game!' });
             return;
@@ -62,19 +65,19 @@ class GameManager {
         this.waitingList = this.waitingList.filter((p) => p.id !== player.id);
         // if the disconnected player is in the active game called the game off and send message to the opponent that
         //in this we find the index of the player which goes offline by seeing it websocket connection 
-        const gameIndex = this.activeGame.findIndex((game) => {
-            return game.player1 == player || game.player2 == player;
-        });
-        if (gameIndex != -1) {
-            const game = this.activeGame[gameIndex];
-            const opponent = player === game.player1 ? game.player2 : game.player1;
-            if (opponent) {
-                opponent.sendMessage({
-                    type: "disconnected",
-                    message: "your opponent is disconnected"
-                });
+        const gameIndex = this.activeGame.has(player.gameId);
+        if (gameIndex) {
+            const game = this.activeGame.get(player.gameId);
+            if (game) {
+                const opponent = player === game.player1 ? game.player2 : game.player1;
+                if (opponent) {
+                    opponent.sendMessage({
+                        type: "disconnected",
+                        message: "your opponent is disconnected"
+                    });
+                }
             }
-            this.activeGame.splice(gameIndex, 1);
+            this.activeGame.delete(player.gameId);
         }
     }
 }
