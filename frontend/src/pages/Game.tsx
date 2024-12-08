@@ -1,3 +1,9 @@
+import Chessboard from "../components/chessbaord";
+
 export default function Game(){
-    return <>hello Game</>
+    return (
+        <div className="mt-10 rounded">
+            <Chessboard/>
+        </div>
+    )
 }
