@@ -14,7 +14,7 @@ export class Game{
         this.board=new Chess()
         this.currentTurn=player1
     }
-    //this we used to b
+    //this we used to broadcast the game state and present the current board to both the player 
     broadcast(message:object){
         this.player1.sendMessage(message)
         this.player2.sendMessage(message)
