@@ -6,8 +6,6 @@ export default function useSocket(url: string) {
   useEffect(() => {
     // Create the WebSocket instance
     const ws = new WebSocket(url);
-
-    // Handle WebSocket events
     ws.onopen = () => {
       console.log("WebSocket connection opened");
       setSocket(ws);
@@ -22,12 +20,11 @@ export default function useSocket(url: string) {
       console.error("WebSocket error:", error);
     };
 
-    // Cleanup function to close WebSocket and clear listeners
     return () => {
       console.log("Cleaning up WebSocket...");
       ws.close();
     };
-  }, []); // Dependency array ensures the effect runs only when the URL changes
+  }, [])
 
   return socket;
 }
