@@ -9,7 +9,7 @@ export default function Game() {
   const [board, setBoard] = useState(chess.board());
   const [currentTurn, setCurrentTurn] = useState<"w" | "b">("w"); // "w" for white, "b" for black
   const [playerColor, setPlayerColor] = useState<"w" | "b" | null>(null); // Color of the current player
-  const [isTurn,SetIsTurn]=useState<boolean>(false)
+  const [rotateBoard,setRotateBoard]=useState<boolean>(false)
 
   useEffect(() => {
     if (!socket) {
@@ -28,7 +28,6 @@ export default function Game() {
           setBoard(newChess.board());
           setPlayerColor(message.color); // Server assigns the player their color
           setCurrentTurn("w"); // Game always starts with white
-          SetIsTurn(true)
           console.log(`Game initialized. You are playing as ${message.color === "w" ? "white" : "black"}.`);
           break;
 
@@ -39,6 +38,7 @@ export default function Game() {
             if (!moveResult) throw new Error("Invalid move from server");
             setBoard(chess.board());
             setCurrentTurn(moveResult.color === "w" ? "b" : "w"); // Update turn after the move
+            console.log(currentTurn)
             console.log("Move applied and board updated.");
           } catch (error) {
             console.error("Error handling move:", error);
@@ -48,11 +48,15 @@ export default function Game() {
         case "game_started":
           const currentColor=message.color
           setCurrentTurn(currentColor)
-          SetIsTurn(true)
+          if(currentColor=="black"){
+            setRotateBoard(true)
+          }
           break
 
         case 'not-your-turn':
-          SetIsTurn(false)
+          chess.undo()
+          setBoard(chess.board())
+          console.log(chess.board())
           alert('not your turn1')
         }
         
@@ -95,7 +99,7 @@ export default function Game() {
           board={board}
           socket={socket!}
           currentTurn={currentTurn === playerColor} // Pass boolean for turn validation
-          isTurn={isTurn}
+          rotateBoard={rotateBoard}
         />
       </div>
 

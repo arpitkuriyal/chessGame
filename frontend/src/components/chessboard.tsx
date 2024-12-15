@@ -22,23 +22,20 @@ export default function Chessboard({
   board,
   socket,
   currentTurn,
-  isTurn
+  rotateBoard
 }: {
   setBoard: any;
   chess: any;
   board: ({ square: Square; type: PieceSymbol; color: Color } | null)[][];
   socket: WebSocket;
   currentTurn: any;
-  isTurn:boolean
+  rotateBoard:boolean
 }) {
   const [from, setFrom] = useState<null | Square>(null);
 
+
   const handleSquareClick = (squareRepresentation: Square) => {
-    console.log(isTurn)
-    if (!isTurn) {
-      alert("It's not your turn!"); // Alert if it's not the player's turn
-      return;
-    }
+
     if (!from) {
       // Select the square to move from
       setFrom(squareRepresentation);
@@ -52,14 +49,7 @@ export default function Chessboard({
           return;
         }
 
-        // Validate the move
-        const legalMoves = chess.moves({ square: from });
-        if (!legalMoves.includes(squareRepresentation)) {
-          console.error("Illegal move attempted:", { from, squareRepresentation });
-          setFrom(null);
-          return;
-        }
-
+        
         // Attempt the move
         const moveResult = chess.move({ from, to: squareRepresentation });
 
@@ -95,7 +85,11 @@ export default function Chessboard({
   };
 
   return (
-    <>
+    <div
+    className={`${
+      rotateBoard ? "transform rotate-180" : ""
+    } transition-transform duration-300`} // Rotate if rotateBoard is true
+  >
       {board.map((row, rowIndex) => {
         return (
           <div key={rowIndex} className="flex justify-center">
@@ -112,13 +106,15 @@ export default function Chessboard({
                     isWhite ? "bg-green-500" : "bg-green-200"
                   } lg:w-20 lg:h-20 md:w-12 md:h-12 w-8 h-8 border flex hover:cursor-pointer hover:border-black`}
                 >
-                  <div className="m-auto">{pieceType}</div>
+                  <div className={`${
+      rotateBoard ? "transform rotate-180" : ""
+    } transition-transform duration-300 m-auto`} >{pieceType}</div>
                 </div>
               );
             })}
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
