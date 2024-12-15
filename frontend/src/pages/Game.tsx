@@ -7,6 +7,9 @@ export default function Game() {
   const socket = useSocket("ws://localhost:8080");
   const [chess, setChess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
+  const [currentTurn, setCurrentTurn] = useState<"w" | "b">("w"); // "w" for white, "b" for black
+  const [playerColor, setPlayerColor] = useState<"w" | "b" | null>(null); // Color of the current player
+  const [isTurn,SetIsTurn]=useState<boolean>(false)
 
   useEffect(() => {
     if (!socket) {
@@ -15,25 +18,45 @@ export default function Game() {
 
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      console.log(message);
+      console.log("Message from server:", message);
 
       switch (message.type) {
         case "join-queue":
+          // Initialize a new game and assign the player's color
           const newChess = new Chess();
           setChess(newChess);
           setBoard(newChess.board());
-          console.log("Game initialized");
+          setPlayerColor(message.color); // Server assigns the player their color
+          setCurrentTurn("w"); // Game always starts with white
+          SetIsTurn(true)
+          console.log(`Game initialized. You are playing as ${message.color === "w" ? "white" : "black"}.`);
           break;
 
-        case "make-move":
+        case "move":
           const move = message.payload;
-          const moveResult = chess.move(move);
-          if (moveResult) {
-            setBoard(chess.board()); // Update the board after the move
+          try {
+            const moveResult = chess.move(move);
+            if (!moveResult) throw new Error("Invalid move from server");
+            setBoard(chess.board());
+            setCurrentTurn(moveResult.color === "w" ? "b" : "w"); // Update turn after the move
+            console.log("Move applied and board updated.");
+          } catch (error) {
+            console.error("Error handling move:", error);
           }
-          console.log("Move applied from server");
           break;
-      }
+
+        case "game_started":
+          const currentColor=message.color
+          setCurrentTurn(currentColor)
+          SetIsTurn(true)
+          break
+
+        case 'not-your-turn':
+          SetIsTurn(false)
+          alert('not your turn1')
+        }
+        
+          
     };
   }, [socket, chess]);
 
@@ -53,7 +76,17 @@ export default function Game() {
 
   return (
     <div className="mt-10 flex justify-center items-center flex-col">
-      {/* Display current turn */}
+      {/* Display current turn and player color */}
+      <div className="mb-4 text-center">
+        <p className="text-lg">
+          {playerColor ? `You are playing as ${playerColor === "w" ? "White" : "Black"}.` : "Waiting for game to start..."}
+        </p>
+        <p className="text-lg font-semibold">
+          {currentTurn === playerColor
+            ? "Your turn!"
+            : "Opponent's turn..."}
+        </p>
+      </div>
 
       <div className="mb-6">
         <Chessboard
@@ -61,6 +94,8 @@ export default function Game() {
           setBoard={setBoard}
           board={board}
           socket={socket!}
+          currentTurn={currentTurn === playerColor} // Pass boolean for turn validation
+          isTurn={isTurn}
         />
       </div>
 

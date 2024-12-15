@@ -30,7 +30,7 @@ export class Game{
 
         if(player!=this.currentTurn){
             player.sendMessage({
-                type:"error",
+                type:"not-your-turn",
                 message:"not your turn"
             })
             return false
@@ -47,7 +47,10 @@ export class Game{
         this.broadcast({
             type:'move',
             move:result,
-            board:this.board.fen()
+            fen:this.board.fen(), 
+            board:this.board.board(),
+            payload:move,
+            currentTurn:this.currentTurn
         })
         if(this.board.isGameOver()){
             this.broadcast({

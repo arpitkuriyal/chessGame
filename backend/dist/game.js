@@ -10,7 +10,7 @@ class Game {
         this.board = new chess_js_1.Chess();
         this.currentTurn = player1;
     }
-    //this we used to b
+    //this we used to broadcast the game state and present the current board to both the player 
     broadcast(message) {
         this.player1.sendMessage(message);
         this.player2.sendMessage(message);
@@ -22,7 +22,7 @@ class Game {
         // update the board then 
         if (player != this.currentTurn) {
             player.sendMessage({
-                type: "error",
+                type: "not-your-turn",
                 message: "not your turn"
             });
             return false;
@@ -37,7 +37,10 @@ class Game {
         this.broadcast({
             type: 'move',
             move: result,
-            board: this.board.fen()
+            fen: this.board.fen(),
+            board: this.board.board(),
+            payload: move,
+            currentTurn: this.currentTurn
         });
         if (this.board.isGameOver()) {
             this.broadcast({

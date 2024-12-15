@@ -34,12 +34,14 @@ class GameManager {
             message: `game is started and your opponent is ${player2.id}`,
             opponent: player2,
             gameId: game.id,
+            color: "white"
         });
         player2.sendMessage({
             type: "game_started",
             message: `game is started and your opponent is ${player1.id}`,
             opponent: player1,
             gameId: game.id,
+            color: "black"
         });
     }
     handleMove(player, move) {
@@ -57,7 +59,7 @@ class GameManager {
             game.makeMove(player, move);
         }
         catch (err) {
-            player.sendMessage({ type: 'error', message: `Invalid move: ${Error}` });
+            player.sendMessage({ type: 'error', message: `Invalid move: ${err}` });
         }
     }
     disconnected(player) {

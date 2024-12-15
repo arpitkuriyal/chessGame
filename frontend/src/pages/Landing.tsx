@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import chessBoard from "../assets/chessboard.png";
 import onePiece from "../assets/onePiece.png";
-import useSocket from "../hooks/useSocket";
 
 export default function Landing() {
   const navigate = useNavigate();
-  const socket=useSocket('ws://localhost:8080');
 
   return (
     <div className="bg-zinc-800 w-full h-screen flex flex-col items-center justify-center gap-10 px-5 md:px-20">
@@ -20,9 +18,6 @@ export default function Landing() {
           <button
             onClick={()=>{
                 navigate('/Game')
-                socket?.send(JSON.stringify({
-                    type:'join-queue'
-                }))
                 
             }}
             className="bg-green-700 rounded-md text-xl md:text-3xl lg:text-5xl flex items-center justify-center px-4 py-3 mx-auto lg:mx-0 text-white font-semibold gap-3 hover:bg-green-800 transition-colors"
