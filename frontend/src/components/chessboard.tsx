@@ -1,20 +1,33 @@
 import { Square, PieceSymbol, Color } from "chess.js";
 import { useState } from "react";
+import kb from "../assets/kb.svg"
+import bb from '../assets/bb.svg'
+import bw from '../assets/bw.svg'
+import rb from '../assets/rb.svg'
+import rw from '../assets/rw.svg'
+import kw from '../assets/kw.svg'
+import qb from '../assets/qb.svg'
+import qw from '../assets/qw.svg'
+import pb from '../assets/pb.svg'
+import pw from '../assets/pw.svg'
+import nw from '../assets/nw.svg'
+import nb from '../assets/nb.svg'
 
-const unicodePieces: { [key: string]: string } = {
-  "pw": "♙",  // white pawn
-  "rw": "♖",  // white rook
-  "nw": "♘",  // white knight
-  "bw": "♗",  // white bishop
-  "qw": "♕",  // white queen
-  "kw": "♔",  // white king
-  "pb": "♟︎", // black pawn
-  "rb": "♜",  // black rook
-  "nb": "♞",  // black knight
-  "bb": "♝",  // black bishop
-  "qb": "♛",  // black queen
-  "kb": "♚",  // black king
+const unicodePieces: { [key: string]: JSX.Element } = {
+  pw: <img src={pw} alt="White Pawn"/>,   // white pawn
+  rw: <img src={rw} alt="White Rook" />,   // white rook
+  nw: <img src={nw} alt="White Knight" />, // white knight
+  bw: <img src={bw} alt="White Bishop" />, // white bishop
+  qw: <img src={qw} alt="White Queen" />, // white queen
+  kw: <img src={kw} alt="White King" />,   // white king
+  pb: <img src={pb} alt="Black Pawn" />,   // black pawn
+  rb: <img src={rb} alt="Black Rook" />,   // black rook
+  nb: <img src={nb} alt="Black Knight" />, // black knight
+  bb: <img src={bb} alt="Black Bishop" />, // black bishop
+  qb: <img src={qb} alt="Black Queen" />, // black queen
+  kb: <img src={kb} alt="Black King" />,   // black king
 };
+
 
 export default function Chessboard({
   setBoard,
@@ -108,7 +121,7 @@ export default function Chessboard({
                 >
                   <div className={`${
       rotateBoard ? "transform rotate-180" : ""
-    } transition-transform duration-300 m-auto`} >{pieceType}</div>
+    }  m-auto duration-[1ms]`} >{pieceType}</div>
                 </div>
               );
             })}

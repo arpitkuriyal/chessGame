@@ -10,7 +10,6 @@ export default function Game() {
   const [currentTurn, setCurrentTurn] = useState<"w" | "b">("w"); // "w" for white, "b" for black
   const [playerColor, setPlayerColor] = useState<"w" | "b" | null>(null); // Color of the current player
   const [rotateBoard,setRotateBoard]=useState<boolean>(false)
-
   useEffect(() => {
     if (!socket) {
       return;
@@ -92,7 +91,7 @@ export default function Game() {
         </p>
       </div>
 
-      <div className="mb-6">
+      <div className={`mb-6 `}>
         <Chessboard
           chess={chess}
           setBoard={setBoard}
