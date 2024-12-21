@@ -57,7 +57,15 @@ export default function Game() {
           setBoard(chess.board())
           console.log(chess.board())
           alert('not your turn1')
+          break
+
+        case "game-over":
+          const gameOver=message.message;
+          alert("game Over"+gameOver)
         }
+        
+          
+
         
           
     };
