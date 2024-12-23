@@ -4,7 +4,7 @@ import Chessboard from "../components/chessboard";
 import useSocket from "../hooks/useSocket";
 import { useNavigate } from "react-router-dom";
 
-export default async function Game() {
+export default function Game() {
   const socket = useSocket("ws://localhost:8080");
   const navigate=useNavigate()
   const [chess, setChess] = useState(new Chess());
