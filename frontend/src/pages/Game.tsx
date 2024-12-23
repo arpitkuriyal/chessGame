@@ -12,6 +12,7 @@ export default function Game() {
   const [currentTurn, setCurrentTurn] = useState<"w" | "b">("w"); // "w" for white, "b" for black
   const [playerColor, setPlayerColor] = useState<"w" | "b" | null>(null); // Color of the current player
   const [rotateBoard,setRotateBoard]=useState<boolean>(false)
+  const [gameStarted,setGameStarted]=useState<boolean>(false)
   useEffect(() => {
     if (!socket) {
       console.log("not connected")
@@ -21,10 +22,12 @@ export default function Game() {
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       console.log("Message from server:", message);
-
+      //// problem this join-queue is useless here need to do something
       switch (message.type) {
-        case "join-queue":
+        case 'waitng':
           // Initialize a new game and assign the player's color
+
+          console.log(gameStarted)
           const newChess = new Chess();
           setChess(newChess);
           setBoard(newChess.board());
@@ -73,6 +76,7 @@ export default function Game() {
   const handlePlayClick = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       console.log("Message sent: join-queue");
+      setGameStarted(true)
       socket.send(
         JSON.stringify({
           type: "join-queue",
@@ -97,12 +101,12 @@ export default function Game() {
         />
       </div>
 
-      <button
+      {gameStarted?<></>:<button
         className="bg-green-400 py-4 px-8 rounded-lg"
         onClick={handlePlayClick}
       >
         Play
-      </button>
+      </button>}
     </div>
   );
 }
