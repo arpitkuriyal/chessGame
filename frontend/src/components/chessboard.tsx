@@ -14,18 +14,18 @@ import nw from '../assets/nw.svg'
 import nb from '../assets/nb.svg'
 
 const unicodePieces: { [key: string]: JSX.Element } = {
-  pw: <img src={pw} alt="White Pawn"/>,   // white pawn
-  rw: <img src={rw} alt="White Rook" />,   // white rook
-  nw: <img src={nw} alt="White Knight" />, // white knight
-  bw: <img src={bw} alt="White Bishop" />, // white bishop
-  qw: <img src={qw} alt="White Queen" />, // white queen
-  kw: <img src={kw} alt="White King" />,   // white king
-  pb: <img src={pb} alt="Black Pawn" />,   // black pawn
-  rb: <img src={rb} alt="Black Rook" />,   // black rook
-  nb: <img src={nb} alt="Black Knight" />, // black knight
-  bb: <img src={bb} alt="Black Bishop" />, // black bishop
-  qb: <img src={qb} alt="Black Queen" />, // black queen
-  kb: <img src={kb} alt="Black King" />,   // black king
+  pw: <img src={pw} alt="White Pawn"/>,  
+  rw: <img src={rw} alt="White Rook" />,   
+  nw: <img src={nw} alt="White Knight" />, 
+  bw: <img src={bw} alt="White Bishop" />, 
+  qw: <img src={qw} alt="White Queen" />, 
+  kw: <img src={kw} alt="White King" />,   
+  pb: <img src={pb} alt="Black Pawn" />,   
+  rb: <img src={rb} alt="Black Rook" />,   
+  nb: <img src={nb} alt="Black Knight" />, 
+  bb: <img src={bb} alt="Black Bishop" />, 
+  qb: <img src={qb} alt="Black Queen" />, 
+  kb: <img src={kb} alt="Black King" />,   
 };
 
 

@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { Chess } from "chess.js";
 import Chessboard from "../components/chessboard";
 import useSocket from "../hooks/useSocket";
+import { useNavigate } from "react-router-dom";
 
-export default function Game() {
+export default async function Game() {
   const socket = useSocket("ws://localhost:8080");
+  const navigate=useNavigate()
   const [chess, setChess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
   const [currentTurn, setCurrentTurn] = useState<"w" | "b">("w"); // "w" for white, "b" for black
@@ -12,6 +14,7 @@ export default function Game() {
   const [rotateBoard,setRotateBoard]=useState<boolean>(false)
   useEffect(() => {
     if (!socket) {
+      console.log("not connected")
       return;
     }
 
@@ -56,18 +59,14 @@ export default function Game() {
           chess.undo()
           setBoard(chess.board())
           console.log(chess.board())
-          alert('not your turn1')
+          alert(message.message)
           break
 
         case "game-over":
           const gameOver=message.message;
-          alert("game Over"+gameOver)
-        }
-        
+          alert(`game Over ${gameOver} ${navigate('/')}`)
           
-
-        
-          
+        }      
     };
   }, [socket, chess]);
 
@@ -86,19 +85,7 @@ export default function Game() {
   };
 
   return (
-    <div className="mt-10 flex justify-center items-center flex-col">
-      {/* Display current turn and player color */}
-      <div className="mb-4 text-center">
-        <p className="text-lg">
-          {playerColor ? `You are playing as ${playerColor === "w" ? "White" : "Black"}.` : "Waiting for game to start..."}
-        </p>
-        <p className="text-lg font-semibold">
-          {currentTurn === playerColor
-            ? "Your turn!"
-            : "Opponent's turn..."}
-        </p>
-      </div>
-
+    <div className="mt-24 flex justify-center items-center flex-col">
       <div className={`mb-6 `}>
         <Chessboard
           chess={chess}
