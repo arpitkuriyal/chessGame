@@ -23,7 +23,7 @@ class Game {
         if (player != this.currentTurn) {
             player.sendMessage({
                 type: "not-your-turn",
-                message: "not your turn"
+                message: `you are moving the wrong color piece`
             });
             return false;
         }
