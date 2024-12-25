@@ -31,7 +31,7 @@ export default function Landing() {
     Play Online
   </button> :<header className="bg-green-700 rounded-md text-xl md:text-3xl lg:text-5xl flex items-center justify-center px-4 py-3 mx-auto lg:mx-0 text-white font-semibold gap-3 hover:bg-green-800 transition-colors">
 <SignedOut>
-  <SignInButton>Play chess online</SignInButton>
+  <SignInButton >Play chess online</SignInButton>
 </SignedOut>
 </header>}
         </div>

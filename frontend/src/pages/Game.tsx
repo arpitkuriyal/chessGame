@@ -23,18 +23,15 @@ export default function Game() {
       const message = JSON.parse(event.data);
       console.log("Message from server:", message);
       //// problem this join-queue is useless here need to do something
+
+
+
+
       switch (message.type) {
         case 'waitng':
           // Initialize a new game and assign the player's color
 
-          console.log(gameStarted)
-          const newChess = new Chess();
-          setChess(newChess);
-          setBoard(newChess.board());
-          setPlayerColor(message.color); // Server assigns the player their color
-          setCurrentTurn("w"); // Game always starts with white
-          console.log(`Game initialized. You are playing as ${message.color === "w" ? "white" : "black"}.`);
-          break;
+
 
         case "move":
           const move = message.payload;
@@ -52,10 +49,17 @@ export default function Game() {
 
         case "game_started":
           const currentColor=message.color
-          setCurrentTurn(currentColor)
+          console.log(gameStarted)
+          const newChess = new Chess();
+          setChess(newChess);
+          setBoard(newChess.board());
+          setPlayerColor(message.color); // Server assigns the player their color
+          setCurrentTurn("w"); // Game always starts with white
+          console.log(`Game initialized. You are playing as ${message.color === "white" ? "white" : "black"}.`);
           if(currentColor=="black"){
             setRotateBoard(true)
           }
+          alert(`game started. You are plaing as a  ${message.color === "white" ? "white" : "black"}` )
           break
 
         case 'not-your-turn':
@@ -82,6 +86,7 @@ export default function Game() {
           type: "join-queue",
         })
       );
+      alert("waiting for the another player to join")
     } else {
       console.error("WebSocket is not open. Unable to send message.");
       alert("Connection not ready. Please try again.");

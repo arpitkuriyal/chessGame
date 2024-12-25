@@ -74,7 +74,7 @@ export default function Chessboard({
     <div
     className={`${
       rotateBoard ? "transform rotate-180" : ""
-    } transition-transform duration-300`} // Rotate if rotateBoard is true
+    }  duration-[1ms]`} // Rotate if rotateBoard is true
   >
       {board.map((row, rowIndex) => {
         return (
