@@ -21,7 +21,7 @@ export default function Chessboard({
 
 
   const handleSquareClick = (squareRepresentation: Square) => {
-
+    
     if (!from) {
       // Select the square to move from
       setFrom(squareRepresentation);

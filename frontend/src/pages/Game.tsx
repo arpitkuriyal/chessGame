@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Game() {
   const socket = useSocket("ws://localhost:8080");
-  const navigate=useNavigate()
+  const navigate=useNavigate();
   const [chess, setChess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
   const [currentTurn, setCurrentTurn] = useState<"w" | "b">("w"); // "w" for white, "b" for black
@@ -22,17 +22,7 @@ export default function Game() {
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       console.log("Message from server:", message);
-      //// problem this join-queue is useless here need to do something
-
-
-
-
       switch (message.type) {
-        case 'waitng':
-          // Initialize a new game and assign the player's color
-
-
-
         case "move":
           const move = message.payload;
           try {
@@ -72,7 +62,16 @@ export default function Game() {
         case "game-over":
           const gameOver=message.message;
           alert(`game Over ${gameOver} ${navigate('/')}`)
-          
+          break
+        
+        case "disconnected":
+          const disconnected=message.message;
+          alert(`disconnected ${disconnected}`)
+          setBoard(new Chess().board)
+          break
+        
+        case "waiting":
+          alert("waiting for another player to join")
         }      
     };
   }, [socket, chess]);
@@ -86,7 +85,6 @@ export default function Game() {
           type: "join-queue",
         })
       );
-      alert("waiting for the another player to join")
     } else {
       console.error("WebSocket is not open. Unable to send message.");
       alert("Connection not ready. Please try again.");

@@ -20,7 +20,7 @@ export class GameManager{
         else{
             this.waitingList.push(player)
             player.sendMessage({
-                type:"waitng",
+                type:"waiting",
                 message:'waitng for another player to come'
             })
         }
