@@ -30,7 +30,7 @@ export default function Game() {
             if (!moveResult) throw new Error("Invalid move from server");
             setBoard(chess.board());
             setCurrentTurn(moveResult.color === "w" ? "b" : "w"); // Update turn after the move
-            console.log(currentTurn)
+
             console.log("Move applied and board updated.");
           } catch (error) {
             console.error("Error handling move:", error);
@@ -39,35 +39,39 @@ export default function Game() {
 
         case "game_started":
           const currentColor=message.color
-          console.log(gameStarted)
           const newChess = new Chess();
           setChess(newChess);
+
           setBoard(newChess.board());
-          setPlayerColor(message.color); // Server assigns the player their color
+
+
+
+          //somemthing here the color is not updating
+          setPlayerColor(currentColor); 
           setCurrentTurn("w"); // Game always starts with white
-          console.log(`Game initialized. You are playing as ${message.color === "white" ? "white" : "black"}.`);
-          if(currentColor=="black"){
+          console.log(`Game initialized. You are playing as ${message.color === "w" ? "white" : "black"}.`);
+          if(currentColor=="b"){
             setRotateBoard(true)
           }
-          alert(`game started. You are plaing as a  ${message.color === "white" ? "white" : "black"}` )
+          alert(`game started. You are plaing as a  ${message.color === "w" ? "white" : "black"}` )
           break
 
         case 'not-your-turn':
           chess.undo()
           setBoard(chess.board())
-          console.log(chess.board())
           alert(message.message)
           break
 
         case "game-over":
           const gameOver=message.message;
-          alert(`game Over ${gameOver} ${navigate('/')}`)
+          alert(`game Over ${gameOver}`)
+          navigate('/')
           break
         
         case "disconnected":
           const disconnected=message.message;
           alert(`disconnected ${disconnected}`)
-          setBoard(new Chess().board)
+          setBoard(new Chess().board())
           break
         
         case "waiting":
@@ -99,6 +103,8 @@ export default function Game() {
           setBoard={setBoard}
           board={board}
           socket={socket!}
+
+          //something here
           currentTurn={currentTurn === playerColor} // Pass boolean for turn validation
           rotateBoard={rotateBoard}
         />

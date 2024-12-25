@@ -28,19 +28,9 @@ export default function Chessboard({
     } else {
       try {
         // Validate current turn
-        if (currentTurn) {
+        if (!currentTurn) {
           console.warn("It's not your turn.");
           
-          setFrom(null);
-          return;
-        }
-
-        
-        // Attempt the move
-        const moveResult = chess.move({ from, to: squareRepresentation });
-
-        if (!moveResult) {
-          console.error("Invalid move:", { from, to: squareRepresentation });
           setFrom(null);
           return;
         }

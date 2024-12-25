@@ -19,7 +19,7 @@ class GameManager {
         else {
             this.waitingList.push(player);
             player.sendMessage({
-                type: "waitng",
+                type: "waiting",
                 message: 'waitng for another player to come'
             });
         }
@@ -34,14 +34,14 @@ class GameManager {
             message: `game is started and your opponent is ${player2.id}`,
             opponent: player2,
             gameId: game.id,
-            color: "white"
+            color: "w"
         });
         player2.sendMessage({
             type: "game_started",
             message: `game is started and your opponent is ${player1.id}`,
             opponent: player1,
             gameId: game.id,
-            color: "black"
+            color: "b"
         });
     }
     handleMove(player, move) {
