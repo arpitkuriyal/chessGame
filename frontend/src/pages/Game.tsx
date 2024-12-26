@@ -29,7 +29,7 @@ export default function Game() {
             const moveResult = chess.move(move);
             if (!moveResult) throw new Error("Invalid move from server");
             setBoard(chess.board());
-            setCurrentTurn(moveResult.color === "w" ? "b" : "w"); // Update turn after the move
+            setCurrentTurn(moveResult.color === "w" ? "b" : "w"); 
 
             console.log("Move applied and board updated.");
           } catch (error) {
@@ -41,14 +41,9 @@ export default function Game() {
           const currentColor=message.color
           const newChess = new Chess();
           setChess(newChess);
-
           setBoard(newChess.board());
-
-
-
-          //somemthing here the color is not updating
           setPlayerColor(currentColor); 
-          setCurrentTurn("w"); // Game always starts with white
+          setCurrentTurn("w"); 
           console.log(`Game initialized. You are playing as ${message.color === "w" ? "white" : "black"}.`);
           if(currentColor=="b"){
             setRotateBoard(true)
@@ -70,8 +65,9 @@ export default function Game() {
         
         case "disconnected":
           const disconnected=message.message;
-          alert(`disconnected ${disconnected}`)
+          alert(`disconnected ${disconnected} you win `)
           setBoard(new Chess().board())
+          setGameStarted(false)
           break
         
         case "waiting":
@@ -103,9 +99,7 @@ export default function Game() {
           setBoard={setBoard}
           board={board}
           socket={socket!}
-
-          //something here
-          currentTurn={currentTurn === playerColor} // Pass boolean for turn validation
+          currentTurn={currentTurn === playerColor} 
           rotateBoard={rotateBoard}
         />
       </div>
