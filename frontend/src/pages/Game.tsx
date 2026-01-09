@@ -18,13 +18,12 @@ export default function Game() {
       console.log("not connected")
       return;
     }
-
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       console.log("Message from server:", message);
       switch (message.type) {
         case "move":
-          const move = message.payload;
+          { const move = message.payload;
           try {
             const moveResult = chess.move(move);
             if (!moveResult) throw new Error("Invalid move from server");
@@ -35,10 +34,10 @@ export default function Game() {
           } catch (error) {
             console.error("Error handling move:", error);
           }
-          break;
+          break; }
 
         case "game_started":
-          const currentColor=message.color
+          { const currentColor=message.color
           const newChess = new Chess();
           setChess(newChess);
           setBoard(newChess.board());
@@ -49,7 +48,7 @@ export default function Game() {
             setRotateBoard(true)
           }
           alert(`game started. You are plaing as a  ${message.color === "w" ? "white" : "black"}` )
-          break
+          break }
 
         case 'not-your-turn':
           chess.undo()
@@ -58,23 +57,23 @@ export default function Game() {
           break
 
         case "game-over":
-          const gameOver=message.message;
+          { const gameOver=message.message;
           alert(`game Over ${gameOver}`)
           navigate('/')
-          break
+          break }
         
         case "disconnected":
-          const disconnected=message.message;
+          { const disconnected=message.message;
           alert(`disconnected ${disconnected} you win `)
           setBoard(new Chess().board())
           setGameStarted(false)
-          break
+          break }
         
         case "waiting":
           alert("waiting for another player to join")
         }      
     };
-  }, [socket, chess]);
+  }, [socket, chess, navigate]);
 
   const handlePlayClick = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {
