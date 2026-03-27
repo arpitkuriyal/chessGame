@@ -2,95 +2,91 @@ import { Square, PieceSymbol, Color } from "chess.js";
 import { useState } from "react";
 import { unicodePieces } from "./pieces";
 
+type BoardSquare =
+  | { square: Square; type: PieceSymbol; color: Color }
+  | null;
+
+type Props = {
+  board: BoardSquare[][];
+  socket: WebSocket;
+  currentTurn: boolean;
+  rotateBoard: boolean;
+};
+
 export default function Chessboard({
-  setBoard,
-  chess,
   board,
   socket,
   currentTurn,
-  rotateBoard
-}: {
-  setBoard: any;
-  chess: any;
-  board: ({ square: Square; type: PieceSymbol; color: Color } | null)[][];
-  socket: WebSocket;
-  currentTurn: any;
-  rotateBoard:boolean
-}) {
-  const [from, setFrom] = useState<null | Square>(null);
+  rotateBoard,
+}: Props) {
+  const [from, setFrom] = useState<Square | null>(null);
 
-
-  const handleSquareClick = (squareRepresentation: Square) => {
-    
+  const handleSquareClick = (square: Square, piece: BoardSquare) => {
     if (!from) {
-      // Select the square to move from
-      setFrom(squareRepresentation);
-    } else {
-      try {
-        // Validate current turn
-        if (!currentTurn) {
-          console.warn("It's not your turn.");
-          
-          setFrom(null);
-          return;
-        }
-
-        // Send the move to the server
-        if (socket.readyState === WebSocket.OPEN) {
-          socket.send(
-            JSON.stringify({
-              type: "make-move",
-              move: {
-                from,
-                to: squareRepresentation,
-              },
-            })
-          );
-        } else {
-          console.error("WebSocket not open. Move not sent.");
-        }
-
-        // Update the board state
-        setBoard(chess.board());
-        setFrom(null);
-      } catch (error) {
-        console.error("An error occurred during the move:", error);
-        setFrom(null);
-      }
+      if (!piece) return;
+      setFrom(square);
+      return;
     }
+
+    if (!currentTurn) {
+      console.warn("Not your turn");
+      setFrom(null);
+      return;
+    }
+
+    if (socket.readyState !== WebSocket.OPEN) {
+      console.error("WebSocket not connected");
+      setFrom(null);
+      return;
+    }
+
+    socket.send(
+      JSON.stringify({
+        type: "make-move",
+        move: { from, to: square },
+      })
+    );
+
+    setFrom(null);
+  };
+
+  const getSquareName = (row: number, col: number): Square => {
+    return (String.fromCharCode(97 + col) + (8 - row)) as Square;
   };
 
   return (
-    <div
-    className={`${
-      rotateBoard ? "transform rotate-180" : ""
-    }  duration-[1ms]`} // Rotate if rotateBoard is true
-  >
-      {board.map((row, rowIndex) => {
-        return (
-          <div key={rowIndex} className="flex justify-center">
-            {row.map((square, squareIndex) => {
-              const squareRepresentation = String.fromCharCode(97 + (squareIndex % 8)) + (8 - rowIndex) as Square;
-              const isWhite = (rowIndex + squareIndex) % 2 === 0;
-              const pieceType = square ? unicodePieces[square.type + square.color] : null;
+    <div className={`${rotateBoard ? "rotate-180" : ""}`}>
+      {board.map((row, rowIndex) => (
+        <div key={rowIndex} className="flex justify-center">
+          {row.map((square, colIndex) => {
+            const squareName = getSquareName(rowIndex, colIndex);
+            const isLight = (rowIndex + colIndex) % 2 === 0;
+            const isSelected = from === squareName;
 
-              return (
-                <div
-                  onClick={() => handleSquareClick(squareRepresentation)}
-                  key={squareIndex}
-                  className={`${
-                    isWhite ? "bg-green-500" : "bg-green-200"
-                  } lg:w-20 lg:h-20 md:w-12 md:h-12 w-8 h-8 border flex hover:cursor-pointer hover:border-black`}
-                >
-                  <div className={`${
-      rotateBoard ? "transform rotate-180" : ""
-    }  m-auto duration-[1ms]`} >{pieceType}</div>
+            const piece =
+              square && unicodePieces[square.type + square.color];
+
+            return (
+              <div
+                key={colIndex}
+                onClick={() => handleSquareClick(squareName, square)}
+                className={`
+                  ${isLight ? "bg-green-500" : "bg-green-200"}
+                  ${isSelected ? "ring-4 ring-yellow-400" : ""}
+                  w-8 h-8 md:w-12 md:h-12 lg:w-20 lg:h-20
+                  flex items-center justify-center
+                  cursor-pointer
+                  transition-all duration-150
+                `}
+              >
+                <div className={rotateBoard ? "rotate-180" : ""}>
+                  {piece}
                 </div>
-              );
-            })}
-          </div>
-        );
-      })}
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }

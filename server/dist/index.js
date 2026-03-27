@@ -20,6 +20,7 @@ socket.on('connection', function (ws) {
             gameManager.handleMove(newPlayer, message.move);
         }
     });
+
     ws.on('close', function () {
         gameManager.disconnected(newPlayer);
     });
