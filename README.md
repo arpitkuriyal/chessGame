@@ -1,25 +1,63 @@
-# Real-Time Chess Game
+# ♟️ Real-Time Multiplayer Chess
 
 ## Overview
-This project is a real-time chess game where two players can play against each other online. The game is built using modern web technologies and features a responsive design for a seamless experience across devices. Players can enjoy classic chess gameplay with real-time updates and synchronization.
 
-## Features
-- **Real-Time Gameplay:** Both players see live updates as moves are made.
-- **Intuitive User Interface:** A clean and user-friendly chessboard built with Tailwind CSS.
-- **Piece Movement Validation:** Ensures only legal moves are allowed.
-- **Player Synchronization:** Moves are broadcasted instantly to the opponent.
-- **Responsive Design:** Fully functional on desktop and mobile devices.
+A real-time multiplayer chess application that enables two players to
+compete online with seamless synchronization. Built using modern web
+technologies, the platform delivers a responsive and interactive
+experience with accurate move validation and live game state updates.
+
+------------------------------------------------------------------------
+
+## Key Features
+
+-   **Real-Time Gameplay**\
+    Instant move synchronization between players using WebSockets.
+
+-   **Robust Move Validation**\
+    Ensures all moves follow official chess rules via `chess.js`.
+
+-   **Interactive UI**\
+    Clean, responsive chessboard built with Tailwind CSS for smooth user
+    experience.
+
+-   **Automatic Matchmaking**\
+    Players are paired dynamically through a queue-based system.
+
+-   **Game State Management**\
+    Handles checkmate, stalemate, draw conditions, and turn switching.
+
+-   **Resilient Connection Handling**\
+    Detects player disconnections and gracefully ends the game.
+
+------------------------------------------------------------------------
 
 ## Tech Stack
-- **Frontend:**
-  - React.js for the user interface.
-  - Tailwind CSS for styling.
-- **Backend:**
-  - Node.js with WebSocket (using `ws` library) for real-time communication.
-- **Deployment:**
-  - not yet deployed. Working on it
-- **Chess Logic:**
-  - Powered by the chess.js library for move validation and game rules.
 
+### Frontend
 
+-   React.js
+-   TypeScript
+-   Tailwind CSS
 
+### Backend
+
+-   Node.js
+-   WebSockets (`ws`)
+
+### Game Engine
+
+-   `chess.js` for move validation and game rules
+
+------------------------------------------------------------------------
+
+## Architecture Overview
+
+-   WebSocket-based communication enables low-latency, bidirectional
+    data flow\
+-   Centralized game manager handles matchmaking and active game
+    sessions\
+-   Game state is maintained on the server and broadcasted to clients in
+    real time
+
+------------------------------------------------------------------------
