@@ -6,36 +6,49 @@ const wss = new WebSocketServer({ port: 8080 });
 const gameManager = new GameManager();
 
 wss.on("connection", (ws) => {
-  const player = new Player(ws);
+  let player: Player | null = null;
 
   ws.on("message", (data) => {
     try {
       const message = JSON.parse(data.toString());
 
       switch (message.type) {
-        case "join-queue":
+        case "join-queue": {
+          player = new Player(
+            ws,
+            message.playerId,
+            message.isGuest
+          );
+
           gameManager.addToQueue(player);
           break;
+        }
 
-        case "make-move":
+        case "make-move": {
+          if (!player) return;
           gameManager.handleMove(player, message.move);
           break;
+        }
 
         default:
-          player.sendMessage({
-            type: "error",
-            message: "Unknown message type",
-          });
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: "Unknown message type",
+            })
+          );
       }
     } catch {
-      player.sendMessage({
-        type: "error",
-        message: "Invalid JSON",
-      });
+      ws.send(
+        JSON.stringify({
+          type: "error",
+          message: "Invalid JSON",
+        })
+      );
     }
   });
 
   ws.on("close", () => {
-    gameManager.disconnected(player);
+    if (player) gameManager.disconnected(player);
   });
 });

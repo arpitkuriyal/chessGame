@@ -5,10 +5,12 @@ export class Player {
   id: string;
   ws: WebSocket;
   gameId: string | null = null;
+  isGuest: boolean;
 
-  constructor(ws: WebSocket) {
-    this.id = uuidv4();
+  constructor(ws: WebSocket, id?: string, isGuest = false) {
+    this.id = id || uuidv4();
     this.ws = ws;
+    this.isGuest = isGuest;
   }
 
   sendMessage(message: unknown) {
