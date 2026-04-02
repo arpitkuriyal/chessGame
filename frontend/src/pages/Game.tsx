@@ -3,10 +3,12 @@ import { Chess } from "chess.js";
 import Chessboard from "../components/chessboard";
 import useSocket from "../hooks/useSocket";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
 export default function Game() {
   const socket = useSocket("ws://localhost:8080");
   const navigate = useNavigate();
+  const { isSignedIn, userId } = useAuth();
 
   const [chess, setChess] = useState(() => new Chess());
   const [board, setBoard] = useState(chess.board());
@@ -16,6 +18,14 @@ export default function Game() {
 
   const [rotateBoard, setRotateBoard] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+
+  useEffect(() => {
+    const isGuest = localStorage.getItem("guest");
+
+    if (!isSignedIn && !isGuest) {
+      navigate("/");
+    }
+  }, [isSignedIn, navigate]);
 
   useEffect(() => {
     if (!socket) return;
@@ -87,7 +97,15 @@ export default function Game() {
       return;
     }
 
-    socket.send(JSON.stringify({ type: "join-queue" }));
+    const guestId = localStorage.getItem("guestId");
+
+    socket.send(
+      JSON.stringify({
+        type: "join-queue",
+        playerId: guestId || userId,
+        isGuest: !!guestId,
+      })
+    );
   };
 
   return (
