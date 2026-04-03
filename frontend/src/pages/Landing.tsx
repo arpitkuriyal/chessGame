@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import chessBoard from "../assets/chessboard.png";
 import onePiece from "../assets/onePiece.png";
 import Header from "../components/header";
@@ -6,7 +7,17 @@ import { SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
+
+  useEffect(() => {
+    const isGuest = localStorage.getItem("guest");
+
+    if (window.location.pathname === "/game") {
+      if (!isSignedIn && !isGuest) {
+        navigate("/");
+      }
+    }
+  }, [isSignedIn, navigate]);
 
   const handleGuestPlay = () => {
     const guestId = `guest-${crypto.randomUUID()}`;
@@ -14,6 +25,8 @@ export default function Landing() {
     localStorage.setItem("guestId", guestId);
     navigate("/game");
   };
+
+  if (!isLoaded) return null;
 
   return (
     <div>
@@ -28,6 +41,7 @@ export default function Landing() {
               className="w-full max-w-md h-auto"
             />
           </div>
+
           <div className="text-center lg:text-left w-full lg:w-1/2">
             <h1 className="text-4xl md:text-6xl lg:text-8xl text-white font-extrabold py-5">
               Play Chess Online
