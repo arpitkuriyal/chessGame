@@ -1,30 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import chessBoard from "../assets/chessboard.png";
 import onePiece from "../assets/onePiece.png";
 import Header from "../components/header";
-import { SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
+import { SignedOut, SignInButton, SignUpButton, useAuth } from "@clerk/clerk-react";
 
 export default function Landing() {
   const navigate = useNavigate();
   const { isSignedIn, isLoaded } = useAuth();
-
-  useEffect(() => {
-    const isGuest = localStorage.getItem("guest");
-
-    if (window.location.pathname === "/game") {
-      if (!isSignedIn && !isGuest) {
-        navigate("/");
-      }
-    }
-  }, [isSignedIn, navigate]);
-
-  const handleGuestPlay = () => {
-    const guestId = `guest-${crypto.randomUUID()}`;
-    localStorage.setItem("guest", "true");
-    localStorage.setItem("guestId", guestId);
-    navigate("/game");
-  };
 
   if (!isLoaded) return null;
 
@@ -68,14 +50,12 @@ export default function Landing() {
                       Login & Play
                     </button>
                   </SignInButton>
+                  <SignUpButton>
+                    <button className="rounded-md border border-white/50 px-6 py-3 text-lg font-semibold text-white hover:bg-white/10">
+                      Create account
+                    </button>
+                  </SignUpButton>
                 </SignedOut>
-
-                <button
-                  onClick={handleGuestPlay}
-                  className="bg-blue-600 px-6 py-3 rounded-md text-white text-lg font-semibold hover:bg-blue-700 transition-colors"
-                >
-                  Play as Guest
-                </button>
               </div>
             )}
           </div>
