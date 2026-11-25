@@ -1,16 +1,17 @@
-import { v4 as uuidv4 } from "uuid";
 import { WebSocket } from "ws";
 
 export class Player {
   id: string;
   ws: WebSocket;
   gameId: string | null = null;
-  isGuest: boolean;
 
-  constructor(ws: WebSocket, id?: string, isGuest = false) {
-    this.id = id || uuidv4();
+  constructor(ws: WebSocket, id: string) {
+    this.id = id;
     this.ws = ws;
-    this.isGuest = isGuest;
+  }
+
+  reconnect(ws: WebSocket) {
+    this.ws = ws;
   }
 
   sendMessage(message: unknown) {
