@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 
 export default function Game() {
-  const socket = useSocket("ws://localhost:8080");
   const navigate = useNavigate();
-  const { isSignedIn, userId } = useAuth();
+  const { isLoaded, isSignedIn, getToken } = useAuth();
+  const socket = useSocket("ws://localhost:8080", getToken, "game");
 
   const [chess, setChess] = useState(() => new Chess());
   const [board, setBoard] = useState(chess.board());
@@ -18,14 +18,12 @@ export default function Game() {
 
   const [rotateBoard, setRotateBoard] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [authenticatedSocket, setAuthenticatedSocket] = useState<WebSocket | null>(null);
+  const isAuthenticated = authenticatedSocket === socket && socket?.readyState === WebSocket.OPEN;
 
   useEffect(() => {
-    const isGuest = localStorage.getItem("guest");
-
-    if (!isSignedIn && !isGuest) {
-      navigate("/");
-    }
-  }, [isSignedIn, navigate]);
+    if (isLoaded && !isSignedIn) navigate("/");
+  }, [isLoaded, isSignedIn, navigate]);
 
   useEffect(() => {
     if (!socket) return;
@@ -34,6 +32,10 @@ export default function Game() {
       const message = JSON.parse(event.data);
 
       switch (message.type) {
+        case "authenticated":
+          setAuthenticatedSocket(socket);
+          break;
+
         case "move": {
           const newChess = new Chess(chess.fen());
           const moveResult = newChess.move(message.payload);
@@ -69,13 +71,24 @@ export default function Game() {
           break;
         }
 
+        case "game-resumed": {
+          const resumedChess = new Chess(message.fen);
+          setChess(resumedChess);
+          setBoard(resumedChess.board());
+          setPlayerColor(message.color);
+          setCurrentTurn(resumedChess.turn());
+          setRotateBoard(message.color === "b");
+          setGameStarted(true);
+          break;
+        }
+
         case "game-over":
           alert(`Game Over: ${message.message}`);
           navigate("/");
           break;
 
         case "opponent-disconnected":
-          alert("Opponent disconnected. You win!");
+          alert("Your opponent disconnected and did not reconnect in time.");
           setGameStarted(false);
           setBoard(new Chess().board());
           break;
@@ -96,14 +109,14 @@ export default function Game() {
       alert("Socket not ready");
       return;
     }
-
-    const guestId = localStorage.getItem("guestId");
+    if (!isAuthenticated) {
+      alert("Authenticating your account…");
+      return;
+    }
 
     socket.send(
       JSON.stringify({
         type: "join-queue",
-        playerId: guestId || userId,
-        isGuest: !!guestId,
       })
     );
   };
@@ -112,17 +125,24 @@ export default function Game() {
     <div className="mt-24 flex flex-col items-center">
       <Chessboard
         board={board}
-        socket={socket!}
-        currentTurn={playerColor === currentTurn}
+        socket={socket}
+        currentTurn={isAuthenticated && playerColor === currentTurn}
         rotateBoard={rotateBoard}
       />
+
+      {gameStarted && !isAuthenticated && (
+        <p role="status" className="mt-4 text-zinc-600" aria-live="polite">
+          Reconnecting to your game…
+        </p>
+      )}
 
       {!gameStarted && (
         <button
           onClick={handlePlay}
+          disabled={!isAuthenticated}
           className="mt-6 bg-green-500 px-6 py-3 rounded-lg"
         >
-          Play
+          {isAuthenticated ? "Play" : "Connecting…"}
         </button>
       )}
     </div>

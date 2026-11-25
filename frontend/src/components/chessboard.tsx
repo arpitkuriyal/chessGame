@@ -8,7 +8,7 @@ type BoardSquare =
 
 type Props = {
   board: BoardSquare[][];
-  socket: WebSocket;
+  socket: WebSocket | null;
   currentTurn: boolean;
   rotateBoard: boolean;
 };
@@ -34,7 +34,7 @@ export default function Chessboard({
       return;
     }
 
-    if (socket.readyState !== WebSocket.OPEN) {
+    if (socket?.readyState !== WebSocket.OPEN) {
       console.error("WebSocket not connected");
       setFrom(null);
       return;
