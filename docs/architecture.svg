@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1040" viewBox="0 0 1680 1040" role="img" aria-labelledby="title description">
+  <title id="title">Two-player live chess and saved game history</title>
+  <desc id="description">Two signed-in players connect to one chess server over WebSockets. The server pairs them, checks every move, and sends board updates to both players in real time. If a player disconnects, the browser retries and the server restores the game for 30 seconds. When the game ends, its result and moves are saved in a database so either player can review the history later.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#000"/>
+    </marker>
+    <marker id="arrowStart" markerWidth="12" markerHeight="12" refX="2" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 12 0 L 0 6 L 12 12 z" fill="#000"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #000; }
+      .card { fill: #fff; stroke: #000; stroke-width: 2; }
+      .server-frame { fill: #fff; stroke: #000; stroke-width: 2.5; }
+      .title { font-size: 34px; font-weight: 700; }
+      .subtitle { font-size: 18px; }
+      .section { font-size: 15px; font-weight: 700; letter-spacing: 1.5px; }
+      .heading { font-size: 20px; font-weight: 700; }
+      .copy { font-size: 16px; }
+      .small { font-size: 14px; }
+      .arrow { fill: none; stroke: #000; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+      .pill { fill: #fff; stroke: #000; stroke-width: 1.5; }
+      .pill-text { font-size: 13px; font-weight: 700; text-anchor: middle; }
+      .note { font-size: 16px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect width="1680" height="1040" fill="#fff"/>
+  <text class="title" x="840" y="65" text-anchor="middle">How two players share a live chess game</text>
+  <text class="subtitle" x="840" y="101" text-anchor="middle">Moves are checked by the server, updates reach both players right away, and completed games can be reviewed later.</text>
+
+  <!-- Live two-way connections: moves go to the server; board updates come back to both players. -->
+  <path class="arrow" d="M 385 290 L 550 285" marker-start="url(#arrowStart)" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M 1295 290 L 1130 285" marker-start="url(#arrowStart)" marker-end="url(#arrow)"/>
+
+  <!-- Server workflow -->
+  <rect class="server-frame" x="510" y="170" width="660" height="755" rx="22"/>
+  <text class="section" x="545" y="205">CHESS SERVER</text>
+
+  <path class="arrow" d="M 840 330 L 840 375" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M 840 495 L 840 545" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M 840 680 L 840 760" marker-end="url(#arrow)"/>
+
+  <!-- A history request uses the same WebSocket connection as live play. -->
+  <path class="arrow" d="M 1140 290 L 1152 290 L 1152 835 L 1140 835" marker-start="url(#arrowStart)" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect class="card" x="550" y="240" width="580" height="90" rx="14"/>
+    <text class="heading" x="580" y="277">Live WebSocket connection</text>
+    <text class="copy" x="580" y="307">Carries moves, board updates, and history requests</text>
+  </g>
+  <g>
+    <rect class="card" x="550" y="375" width="580" height="120" rx="14"/>
+    <text class="heading" x="580" y="413">Matchmaking and access checks</text>
+    <text class="copy" x="580" y="443">Pairs the players and confirms they belong to this game</text>
+    <text class="copy" x="580" y="470">A signed-in player cannot move in someone else's game</text>
+  </g>
+  <g>
+    <rect class="card" x="550" y="545" width="580" height="135" rx="14"/>
+    <text class="heading" x="580" y="585">Live game and shared board</text>
+    <text class="copy" x="580" y="616">Checks turns and legal moves, then sends each update</text>
+    <text class="copy" x="580" y="644">to both players immediately.</text>
+  </g>
+  <g>
+    <rect class="card" x="550" y="760" width="580" height="150" rx="14"/>
+    <text class="heading" x="580" y="800">After the game: move history</text>
+    <text class="copy" x="580" y="832">Saves the result and full move list. Either player can</text>
+    <text class="copy" x="580" y="860">request the history later; access is checked again.</text>
+    <text class="small" x="580" y="889">The server returns the saved moves to that player's history page.</text>
+  </g>
+
+  <!-- Player clients -->
+  <g>
+    <rect class="card" x="55" y="205" width="330" height="200" rx="16"/>
+    <text class="heading" x="85" y="245">Player 1</text>
+    <text class="copy" x="85" y="280">Signs in with Clerk.</text>
+    <text class="copy" x="85" y="310">Makes moves on the board.</text>
+    <text class="copy" x="85" y="340">Sees live board updates.</text>
+    <text class="copy" x="85" y="370">Reviews saved games later.</text>
+  </g>
+  <g>
+    <rect class="card" x="1295" y="205" width="330" height="200" rx="16"/>
+    <text class="heading" x="1325" y="245">Player 2</text>
+    <text class="copy" x="1325" y="280">Signs in with Clerk.</text>
+    <text class="copy" x="1325" y="310">Makes moves on the board.</text>
+    <text class="copy" x="1325" y="340">Sees live board updates.</text>
+    <text class="copy" x="1325" y="370">Reviews saved games later.</text>
+  </g>
+
+  <!-- Reconnect recovery -->
+  <g>
+    <rect class="card" x="55" y="535" width="330" height="180" rx="16"/>
+    <text class="heading" x="85" y="575">If a player disconnects</text>
+    <text class="copy" x="85" y="608">The browser retries automatically.</text>
+    <text class="copy" x="85" y="638">For 30 seconds, the server keeps the</text>
+    <text class="copy" x="85" y="668">game and restores the board and turn.</text>
+  </g>
+  <path class="arrow" d="M 385 625 C 435 625 475 610 550 610" marker-start="url(#arrowStart)" marker-end="url(#arrow)"/>
+  <rect class="pill" x="399" y="577" width="103" height="27" rx="13"/>
+  <text class="pill-text" x="450.5" y="595">retry + restore</text>
+
+  <!-- Persistent game records -->
+  <g>
+    <rect class="card" x="1260" y="760" width="365" height="150" rx="16"/>
+    <text class="heading" x="1290" y="800">Game database</text>
+    <text class="copy" x="1290" y="832">Completed result, final board,</text>
+    <text class="copy" x="1290" y="860">and every move in order.</text>
+    <text class="small" x="1290" y="889">Used to show each player their game history.</text>
+  </g>
+  <path class="arrow" d="M 1130 835 L 1260 835" marker-start="url(#arrowStart)" marker-end="url(#arrow)"/>
+  <rect class="pill" x="1150" y="786" width="90" height="27" rx="13"/>
+  <text class="pill-text" x="1195" y="804">save / load</text>
+
+  <line x1="55" y1="968" x2="1625" y2="968" stroke="#000" stroke-width="1.5"/>
+  <text class="note" x="840" y="1004">Only the two players in a game can make moves or review that game's history.</text>
+</svg>
